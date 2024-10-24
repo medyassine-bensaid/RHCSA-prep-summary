@@ -69,16 +69,48 @@ If you forget a command:
 
 ## 3. File and Directory Management
 
-### Hard Links
-Hard links link two files without duplicating content.
+### Hard & soft Links
+
 - **Check Link Count**: 
     ```bash
     stat filename
     ```
-- **Create a Hard Link**:
-    ```bash
-    ln /path/to/file /path/to/hardlink
-    ```
+Hard Link: A direct reference to the same inode on the disk. Both the original file and its hard link share the same inode number and data blocks.
+Soft Link (Symbolic Link): A reference or pointer to another file's path. It has its own inode and points to the target file by path.
+Practical Example:
+Creating a Hard Link: Let's create a file named original.txt and a hard link to it called hard_link.txt.
+
+
+### Step 1: Create the original file
+    ```echo "This is the original file." > original.txt    ```
+
+# Step 2: Create a hard link
+    ```ln original.txt hard_link.txt    ```
+Explanation:
+Both original.txt and hard_link.txt share the same inode and data blocks. They are essentially the same file with two different names.
+
+If you modify one, the changes will reflect in the other.
+If you delete one of the files, the other remains and the data is not lost.
+
+# Check inode numbers for verification
+    ```ls -li original.txt hard_link.txt    ```
+You should see the same inode number for both files.
+
+Creating a Soft Link (Symbolic Link): Now, let’s create a symbolic link named soft_link.txt that points to original.txt.
+
+bash
+Copier le code
+### Step 1: Create a symbolic link
+    ```ln -s original.txt soft_link.txt    ```
+Explanation:
+
+soft_link.txt acts as a pointer to original.txt. It does not share the same inode number or data blocks.
+If you modify original.txt, the changes are reflected when accessing soft_link.txt because it points to the same file.
+If you delete original.txt, the soft_link.txt becomes a broken link and points to a non-existent file.
+
+# Check inode numbers for verification
+    ```ls -li original.txt soft_link.txt    ```
+You will see different inode numbers for original.txt and soft_link.txt.
   **Considerations**:
   - Only files on the same partition can be hard-linked.
 
